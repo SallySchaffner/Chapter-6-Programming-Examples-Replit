@@ -1,35 +1,69 @@
-// Chapter 6 Programming Examples: Falling Distance
-// Create a table showing the distance traveled by an object for seconds 1 through 10.
+// Chapter 6 Programming Examples: Lowest Score Drop
+// Displays the average of a group of test scores with the lowest score dropped.
 
 #include <iostream>
 #include <iomanip>
 
 using namespace std;
 
-double getDistance(int);
+double getScore();
+bool isLower(double, double);
+double calcAverage(double, int, double);
+
+const double MAXSCORE = 100;
+const double sentinel = -1;
 
 int main()
 {
-  double distance;
+  double totalScores = 0, score, minScore, avgScore;
+  int scoreCounter = 0;
 
-  cout << fixed << setprecision(1) << showpoint;
-  cout << "Distance traveled in Meters" << endl;
-  cout << "Time (in seconds)     Distance (in meters)" << endl;
-
-  for (int seconds = 1; seconds <= 10; seconds++)
+  score = getScore();
+  minScore = score;
+  do
   {
-    distance = getDistance(seconds);
-    cout << setw(5) << seconds << setw(25) << distance << endl;
-  }
-  cout << endl;
+    totalScores += score;
+    if (isLower(score, minScore))
+      minScore = score;
+    scoreCounter++;
+    score = getScore();
+  } while (score >= 0);
+
+  avgScore = calcAverage(totalScores, scoreCounter, minScore);
+
+  cout << "The average of the scores is: " << avgScore << endl;
+  cout << "Number of scores used in average is: " << (scoreCounter - 1) << endl;
+  cout << "The lowest dropped score was: " << minScore << endl;
 
   return 0;
 }
 
-double getDistance(int time)
+// Gets a test score from interactive input (score must be between 0 and MAXSCORE).
+// Returns the validated score
+double getScore()
 {
-  const double GRAVITY = 9.8;
-  double distance;
-  distance = .5 * GRAVITY * time * time;
-  return distance;
+  double score;
+  do
+  {
+    cout << "Enter a test score (must be " << MAXSCORE << ") or -1 to quit: ";
+    cin >> score;
+    if (score > MAXSCORE)
+      cout << "Error, score too high, please renter" << endl;
+  } while (score > MAXSCORE);
+
+  return score;
+
+}
+
+// Given two double numbers, returns true if value1 < value2, otherwise returns false
+bool isLower(double value1, double value2)
+{
+  return (value1 < value2);
+}
+
+double calcAverage(double total, int count, double lowest)
+{
+  double average;
+  average = (total - lowest) / (count - 1);
+  return average;
 }
